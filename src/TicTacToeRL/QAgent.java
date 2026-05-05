@@ -1,5 +1,9 @@
+package TicTacToeRL;
+
 import java.util.Random;
 import java.util.ArrayList;
+import TicTacToeRL.GameVars.Mark;
+import TicTacToeRL.GameVars.HyperParameters;
 
 public class QAgent {
     private QTable agentQTable;

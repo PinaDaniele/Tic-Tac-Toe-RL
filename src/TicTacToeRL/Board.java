@@ -1,9 +1,12 @@
-import java.util.List;
+package TicTacToeRL;
+
 import java.util.ArrayList;
+import TicTacToeRL.GameVars.Mark;
+import TicTacToeRL.GameVars.GameState;
 
 public class Board{
     private Mark[][] boardMatrix;
-    public static final int SIZE = 3;
+    public static int SIZE = 3;
 
     Board(){
         setEmptyBoard();
@@ -128,7 +131,7 @@ public class Board{
         return GameState.IN_PROGRESS;
     }
 
-    public List<Integer> getAvailableMoves(){
+    public ArrayList<Integer> getAvailableMoves(){
         ArrayList<Integer> availableMoves = new ArrayList<>();
         for (int i=0; i<SIZE; i++){
             for(int j=0; j<SIZE; j++){

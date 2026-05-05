@@ -1,3 +1,5 @@
+package TicTacToeRL;
+
 public interface FileWritable {
 
     public abstract void saveToFile(String fileName);

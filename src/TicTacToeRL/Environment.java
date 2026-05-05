@@ -1,11 +1,15 @@
+package TicTacToeRL;
+
 import java.util.Random;
+import TicTacToeRL.GameVars.StepResult;
+import TicTacToeRL.GameVars.Mark;
+import TicTacToeRL.GameVars.GameState;
 
 public class Environment {
     private Board board;
     private Mark currentPlayer;
     private static Random randomGenerator = new Random();
-
-    private record StepResult(String state, double reward, boolean done){}
+    public int SIZE;
 
 
     public Environment(){
@@ -58,5 +62,13 @@ public class Environment {
         }
 
         return new StepResult(board.getBoardState(), reward, done);
+    }
+
+    public Board getBoard(){
+        return board;
+    }
+
+    public Mark getCurrentPlayer(){
+        return currentPlayer;
     }
 }
