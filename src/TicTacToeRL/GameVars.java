@@ -1,4 +1,5 @@
 package TicTacToeRL;
+
 public final class GameVars {
     public enum Mark {
         O, X, EMPTY
@@ -15,9 +16,11 @@ public final class GameVars {
     double epsilonDecay,
     double minEpsilon){}
 
-    public record StepResult(
-        String state, 
+    public record StepRecord(
+        String state,
+        int action,
         double reward, 
-        boolean done){}
+        boolean done
+        ){}
 
 }

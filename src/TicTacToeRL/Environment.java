@@ -1,7 +1,7 @@
 package TicTacToeRL;
 
 import java.util.Random;
-import TicTacToeRL.GameVars.StepResult;
+import TicTacToeRL.GameVars.StepRecord;
 import TicTacToeRL.GameVars.Mark;
 import TicTacToeRL.GameVars.GameState;
 
@@ -49,11 +49,14 @@ public class Environment {
         }
     }
 
-    public StepResult step(int row, int col){
+    public StepRecord step(int actionIndex){
+        String prevState = board.getBoardState();
+        int row = actionIndex / Board.SIZE;
+        int col = actionIndex % Board.SIZE;
         boolean moveSuccessful = board.makeMove(row, col, currentPlayer);
 
         if(!moveSuccessful){
-            return new StepResult(board.getBoardState(), -10.0, true);
+            return new StepRecord(prevState, actionIndex, -10.0, true);
         }
 
         double reward = getReward();
@@ -63,7 +66,7 @@ public class Environment {
             swapPlayer();
         }
 
-        return new StepResult(board.getBoardState(), reward, done);
+        return new StepRecord(prevState, actionIndex, reward, done);
     }
 
     public Board getBoard(){
