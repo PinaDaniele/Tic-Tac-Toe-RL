@@ -28,6 +28,7 @@ public class Environment {
         }
     }
 
+    //gives out a reward depending on the game state
     private double getReward(){
         if (board.getGameState() == GameState.WIN){
             return 1.0;
@@ -38,6 +39,7 @@ public class Environment {
         return 0.0;
     }
 
+    //changes turn
     private void swapPlayer(){
         if (currentPlayer == Mark.X){
             currentPlayer = Mark.O;

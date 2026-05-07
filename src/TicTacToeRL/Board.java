@@ -12,6 +12,7 @@ public class Board{
         setEmptyBoard();
     }
 
+    //Resets the board
     private void setEmptyBoard(){
         boardMatrix = new Mark[SIZE][SIZE];
         for(int i=0; i<SIZE; i++){
@@ -21,6 +22,7 @@ public class Board{
         }
     }
 
+    //returns the board current state as a string
     public String getBoardState(){
         String state = "";
         for (int i=0; i<SIZE; i++){
@@ -31,6 +33,7 @@ public class Board{
         return state;
     }
 
+    //Place a mark, returns false if the move is illegal
     public boolean makeMove(int row, int col, Mark mark){
         if(boardMatrix[row][col] == Mark.EMPTY){
             boardMatrix[row][col] = mark;
@@ -41,6 +44,7 @@ public class Board{
         }
     }
 
+    //Some functions to check if the player has won
     private boolean checkRow(int row){
         if (boardMatrix[row][0] != Mark.EMPTY){
             for (int i=1; i<SIZE; i++){
@@ -131,6 +135,7 @@ public class Board{
         return GameState.IN_PROGRESS;
     }
 
+    //Returns a list of indexes, representing empty cells
     public ArrayList<Integer> getAvailableMoves(){
         ArrayList<Integer> availableMoves = new ArrayList<>();
         for (int i=0; i<SIZE; i++){

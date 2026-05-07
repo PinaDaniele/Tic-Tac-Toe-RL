@@ -21,13 +21,14 @@ public class QAgent {
         currentEpsilon = parameters.epsilon();
     }
 
+    //for loading existing QTable from a file
     QAgent(Mark mark, int actions, String filePath, HyperParameters parameters){
         agentMark = mark;
         agentQTable = new QTable(actions, filePath);
         agentParameters = parameters;
         currentEpsilon = parameters.epsilon();
     }
-
+    
     public int makeAction(String state, ArrayList<Integer> availableActions){
         if (random.nextDouble() < currentEpsilon){
             int randomIndex = random.nextInt(availableActions.size());
