@@ -59,7 +59,7 @@ public class Environment {
         boolean moveSuccessful = board.makeMove(row, col, currentPlayer);
 
         if(!moveSuccessful){
-            return new StepResult(board.getBoardState(), INVALID_MOVE_PENALTY, true);
+            return new StepResult(board.getBoardStateString(), INVALID_MOVE_PENALTY, true);
         }
 
         double reward = getReward();
@@ -69,7 +69,7 @@ public class Environment {
             swapPlayer();
         }
 
-        return new StepResult(board.getBoardState(), reward, done);
+        return new StepResult(board.getBoardStateString(), reward, done);
     }
 
     public Board getBoard(){

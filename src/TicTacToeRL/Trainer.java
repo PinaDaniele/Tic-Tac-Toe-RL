@@ -1,7 +1,7 @@
 package TicTacToeRL;
 
 import TicTacToeRL.GameVars.*;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -85,8 +85,8 @@ public class Trainer {
 
             while (!done){
                 QAgent currentAgent = getCurrentAgent();
-                String currentState = env.getBoard().getBoardState();
-                ArrayList<Integer> availableMoves = env.getBoard().getAvailableMoves();
+                String currentState = env.getBoard().getBoardStateString();
+                List<Integer> availableMoves = env.getBoard().getAvailableMoves();
 
                 int actionIndex = currentAgent.makeAction(currentState, availableMoves);
 

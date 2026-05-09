@@ -1,7 +1,7 @@
 package TicTacToeRL;
 
 import java.util.Random;
-import java.util.ArrayList;
+import java.util.List;
 import TicTacToeRL.GameVars.Mark;
 import TicTacToeRL.GameVars.HyperParameters;
 
@@ -29,7 +29,7 @@ public class QAgent {
         currentEpsilon = parameters.epsilon();
     }
     
-    public int makeAction(String state, ArrayList<Integer> availableActions){
+    public int makeAction(String state, List<Integer> availableActions){
         if (random.nextDouble() < currentEpsilon){
             int randomIndex = random.nextInt(availableActions.size());
             return availableActions.get(randomIndex);

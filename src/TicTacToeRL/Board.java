@@ -1,18 +1,21 @@
 package TicTacToeRL;
 
 import java.util.ArrayList;
+import java.util.List;
 import TicTacToeRL.GameVars.Mark;
 import TicTacToeRL.GameVars.GameState;
 
 public class Board{
-    private Mark[][] boardMatrix;
-    public static int SIZE = 3;
 
-    Board(){
+    private Mark[][] boardMatrix;
+    public static final int SIZE = 3;
+    private int moveCount;
+
+    public Board(){
+        moveCount = 0;
         setEmptyBoard();
     }
 
-    //Resets the board
     private void setEmptyBoard(){
         boardMatrix = new Mark[SIZE][SIZE];
         for(int i=0; i<SIZE; i++){
@@ -22,21 +25,44 @@ public class Board{
         }
     }
 
-    //returns the board current state as a string
-    public String getBoardState(){
-        String state = "";
+    @Override
+    public String toString(){
+        StringBuilder stringBoard = new StringBuilder();
         for (int i=0; i<SIZE; i++){
             for (int j=0; j<SIZE; j++){
-                state += boardMatrix[i][j].toString();
+                stringBoard.append(boardMatrix[i][j].toString() + "");
             }
+            stringBoard.append("\n");
         }
-        return state;
+        return stringBoard.toString();
     }
 
-    //Place a mark, returns false if the move is illegal
+    public String getBoardStateString(){
+        StringBuilder state = new StringBuilder();
+        for (int i=0; i<SIZE; i++){
+            for (int j=0; j<SIZE; j++){
+                state.append(boardMatrix[i][j].toString());
+            }
+        }
+        return state.toString();
+    }
+
+    public List<Integer> getAvailableMoves(){
+        List<Integer> availableMoves = new ArrayList<>();
+        for (int i=0; i<SIZE; i++){
+            for(int j=0; j<SIZE; j++){
+                if(boardMatrix[i][j] == Mark.EMPTY){
+                    availableMoves.add(i * SIZE + j);
+                }
+            }
+        }
+        return availableMoves;
+    }
+
     public boolean makeMove(int row, int col, Mark mark){
         if(boardMatrix[row][col] == Mark.EMPTY){
             boardMatrix[row][col] = mark;
+            moveCount++;
             return true;
         }
         else{
@@ -44,7 +70,31 @@ public class Board{
         }
     }
 
-    //Some functions to check if the player has won
+    public GameState getGameState(){
+        for (int i=0; i<SIZE; i++){
+            if (checkRow(i)){
+                return GameState.WIN;
+            }
+        }
+
+        for (int i=0; i<SIZE; i++){
+            if (checkCol(i)){
+                return GameState.WIN;
+            }
+        }
+
+        if (checkDiag()){
+            return GameState.WIN;
+        }
+
+        if (moveCount == SIZE * SIZE){
+            return GameState.DRAW;
+        }
+
+        return GameState.IN_PROGRESS;
+    }
+
+    // --- Helper methods fo checking winning conditions ---
     private boolean checkRow(int row){
         if (boardMatrix[row][0] != Mark.EMPTY){
             for (int i=1; i<SIZE; i++){
@@ -98,66 +148,6 @@ public class Board{
         }
 
         return LRDiag || RLDiag;
-    }
-
-    private boolean isFull(){
-        for(int i=0; i<SIZE; i++){
-            for (int j=0; j<SIZE; j++){
-                if(boardMatrix[i][j] == Mark.EMPTY){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public GameState getGameState(){
-        for (int i=0; i<SIZE; i++){
-            if (checkRow(i)){
-                return GameState.WIN;
-            }
-        }
-
-        for (int i=0; i<SIZE; i++){
-            if (checkCol(i)){
-                return GameState.WIN;
-            }
-        }
-
-        if (checkDiag()){
-            return GameState.WIN;
-        }
-
-        if (isFull()){
-            return GameState.DRAW;
-        }
-
-        return GameState.IN_PROGRESS;
-    }
-
-    //Returns a list of indexes, representing empty cells
-    public ArrayList<Integer> getAvailableMoves(){
-        ArrayList<Integer> availableMoves = new ArrayList<>();
-        for (int i=0; i<SIZE; i++){
-            for(int j=0; j<SIZE; j++){
-                if(boardMatrix[i][j] == Mark.EMPTY){
-                    availableMoves.add(i * SIZE + j);
-                }
-            }
-        }
-        return availableMoves;
-    }
-
-    @Override
-    public String toString(){
-        String stringBoard = "";
-        for (int i=0; i<SIZE; i++){
-            for (int j=0; j<SIZE; j++){
-                stringBoard += boardMatrix[i][j].toString() + " ";
-            }
-            stringBoard += "\n";
-        }
-        return stringBoard;
-    }
+    }   
 
 }
