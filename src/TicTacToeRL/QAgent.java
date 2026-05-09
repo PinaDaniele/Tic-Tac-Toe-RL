@@ -14,17 +14,17 @@ public class QAgent {
 
     private static Random random = new Random();
 
-    QAgent(Mark mark, int actions, HyperParameters parameters){
+    QAgent(Mark mark, HyperParameters parameters){
         agentMark = mark;
-        agentQTable = new QTable(actions);
+        agentQTable = new QTable();
         agentParameters = parameters;
         currentEpsilon = parameters.epsilon();
     }
 
     //for loading existing QTable from a file
-    QAgent(Mark mark, int actions, String filePath, HyperParameters parameters){
+    QAgent(Mark mark, String filePath, HyperParameters parameters){
         agentMark = mark;
-        agentQTable = new QTable(actions, filePath);
+        agentQTable = new QTable(filePath);
         agentParameters = parameters;
         currentEpsilon = parameters.epsilon();
     }

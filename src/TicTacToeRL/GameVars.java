@@ -6,7 +6,7 @@ public final class GameVars {
     }
 
     public enum GameState {
-        IN_PROGRESS, DRAW, WIN;
+        IN_PROGRESS, DRAW, WIN, INVALID;
     }
 
     public record HyperParameters(
@@ -16,11 +16,16 @@ public final class GameVars {
     double epsilonDecay,
     double minEpsilon){}
 
-    public record StepRecord(
+    public record StepResult(
+        String state,
+        double reward, 
+        boolean done    
+    ){}
+
+    public record PreviousMove(
         String state,
         int action,
-        double reward, 
-        boolean done
-        ){}
+        double reward
+    ){}
 
 }

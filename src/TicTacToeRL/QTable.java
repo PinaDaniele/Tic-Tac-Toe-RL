@@ -1,19 +1,23 @@
 package TicTacToeRL;
 
 import java.util.HashMap;
+import java.util.Set;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class QTable implements FileWritable {
     private HashMap<String, double[]> table;
-    private static int numActions;
+    private final int numActions = Board.SIZE * Board.SIZE;
 
-    public QTable(int actions){
-        numActions = actions;
+    public static final String SAVE_FOLDER = "./qtables/";
+    private final Path folderPath = Path.of(SAVE_FOLDER);
+
+    public QTable(){
         table = new HashMap<>();
     }
 
-    public QTable(int actions, String fileName){
-        numActions = actions;
+    public QTable(String fileName){
         table = new HashMap<>();
         loadFromFile(fileName);
     }
@@ -42,11 +46,22 @@ public class QTable implements FileWritable {
         return maxQValue;
     }
 
+    public Set<String> getStates(){
+        return table.keySet();
+    }
+
     @Override
     public void saveToFile(String fileName){
-        File file = new File(fileName);
+        try{
+            Files.createDirectories(folderPath);
+        }
+        catch(IOException e){
+            System.err.println("An error occured while creating the save QTable folder: " + e.getMessage());
+        }
 
-        try(PrintWriter writer = new PrintWriter(file)){
+        Path filePath = folderPath.resolve(fileName);
+
+        try(PrintWriter writer = new PrintWriter(filePath.toFile())){
             for(String state: table.keySet()){
                 double[] QValues = table.get(state);
                 String line = state;
@@ -68,7 +83,8 @@ public class QTable implements FileWritable {
         table.clear();
         FileReader file;
         try{
-            file = new FileReader(fileName);
+            Path filePath = folderPath.resolve(fileName);
+            file = new FileReader(filePath.toFile());
         }
         catch (FileNotFoundException e){
             System.err.println("File not found: " + e.getMessage());
