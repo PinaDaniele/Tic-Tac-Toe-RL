@@ -3,9 +3,13 @@ package TicTacToeRL;
 import java.util.ArrayList;
 import java.util.List;
 import TicTacToeRL.GameVars.Mark;
-import TicTacToeRL.GameVars.GameState;
 
 public class Board{
+        
+
+    public enum GameState {
+        IN_PROGRESS, DRAW, WIN;
+    }
 
     private Mark[][] boardMatrix;
     public static final int SIZE = 3;

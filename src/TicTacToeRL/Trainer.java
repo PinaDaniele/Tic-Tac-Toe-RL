@@ -90,7 +90,7 @@ public class Trainer {
 
                 int actionIndex = currentAgent.makeAction(currentState, availableMoves);
 
-                StepResult moveResult = env.step(actionIndex);
+                Environment.StepResult moveResult = env.step(actionIndex);
 
                 if (moveResult.done()){
                     done = true;

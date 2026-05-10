@@ -1,14 +1,19 @@
 package TicTacToeRL;
 
 import java.util.Random;
-import TicTacToeRL.GameVars.StepResult;
+
 import TicTacToeRL.GameVars.Mark;
-import TicTacToeRL.GameVars.GameState;
 
 public class Environment {
+    public record StepResult(
+        String state,
+        double reward, 
+        boolean done    
+    ){}
+
     private Board board;
     private Mark currentPlayer;
-    private static Random randomGenerator = new Random();
+    private final static Random randomGenerator = new Random();
 
     public static final double INVALID_MOVE_PENALTY = -10;
     public static final double WIN_REWARD = 1;
@@ -22,35 +27,9 @@ public class Environment {
 
     public void resetGame(){
         board = new Board();
+
         int randomPlayer = randomGenerator.nextInt(2);
-
-        if (randomPlayer == 0){
-            currentPlayer = Mark.X;
-        }
-        else{
-            currentPlayer = Mark.O;
-        }
-    }
-
-    //gives out a reward depending on the game state
-    private double getReward(){
-        if (board.getGameState() == GameState.WIN){
-            return WIN_REWARD;
-        }
-        else if (board.getGameState() == GameState.DRAW){
-            return DRAW_REWARD;
-        }
-        return IN_PROGRESS_REWARD;
-    }
-
-    //changes turn
-    private void swapPlayer(){
-        if (currentPlayer == Mark.X){
-            currentPlayer = Mark.O;
-        }
-        else{
-            currentPlayer = Mark.X;
-        }
+        currentPlayer = (randomPlayer == 0) ? Mark.X : Mark.O;
     }
 
     public StepResult step(int actionIndex){
@@ -62,14 +41,26 @@ public class Environment {
             return new StepResult(board.getBoardStateString(), INVALID_MOVE_PENALTY, true);
         }
 
-        double reward = getReward();
-        boolean done = reward > 0.0;
+        Board.GameState currentState = board.getGameState();
+        double reward = getReward(currentState);
+        boolean done = (currentState != Board.GameState.IN_PROGRESS);
 
         if (!done){
-            swapPlayer();
+            currentPlayer = (currentPlayer == Mark.X) ? Mark.O : Mark.X;
         }
 
         return new StepResult(board.getBoardStateString(), reward, done);
+    }
+
+    private double getReward(Board.GameState state){
+        switch (state) {
+            case WIN:
+                return WIN_REWARD;
+            case DRAW:
+                return DRAW_REWARD;
+            default:
+                return IN_PROGRESS_REWARD;
+        }
     }
 
     public Board getBoard(){
