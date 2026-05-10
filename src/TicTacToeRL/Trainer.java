@@ -4,6 +4,7 @@ import TicTacToeRL.GameVars.*;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
+import java.io.FileNotFoundException;
 
 public class Trainer {
 
@@ -24,7 +25,7 @@ public class Trainer {
         trainerCounter++;
     }
 
-    public Trainer(int epochs,HyperParameters parameters, String filePath){
+    public Trainer(int epochs,HyperParameters parameters, String filePath) throws FileNotFoundException{
         EPOCHS = epochs;
         env = new Environment();
         Xagent = new QAgent(Mark.X, filePath, parameters);

@@ -8,22 +8,21 @@ import java.nio.file.Path;
 
 public class QTable implements FileWritable {
     private HashMap<String, double[]> table;
-    private final int numActions = Board.SIZE * Board.SIZE;
 
-    public static final String SAVE_FOLDER = "./qtables/";
+    private static final String SAVE_FOLDER = "./qtables/";
     private final Path folderPath = Path.of(SAVE_FOLDER);
 
     public QTable(){
         table = new HashMap<>();
     }
 
-    public QTable(String fileName){
+    public QTable(String fileName) throws FileNotFoundException{
         table = new HashMap<>();
         loadFromFile(fileName);
     }
 
     public double[] getQValues(String state){
-        return table.computeIfAbsent(state, k -> new double[numActions]);
+        return table.computeIfAbsent(state, k -> new double[Board.SIZE * Board.SIZE]);
     }
 
     public double getQValue(String state, int action){
@@ -64,12 +63,12 @@ public class QTable implements FileWritable {
         try(PrintWriter writer = new PrintWriter(filePath.toFile())){
             for(String state: table.keySet()){
                 double[] QValues = table.get(state);
-                String line = state;
+                StringBuilder line = new StringBuilder(state);
 
                 for(double QValue: QValues){
-                    line += "," + QValue;
+                    line.append(",").append(QValue);
                 }
-                writer.println(line);
+                writer.println(line.toString());
             }
         }
         catch(IOException e){
@@ -79,7 +78,7 @@ public class QTable implements FileWritable {
     }
 
     @Override
-    public void loadFromFile(String fileName){
+    public void loadFromFile(String fileName) throws FileNotFoundException{
         table.clear();
         FileReader file;
         try{
@@ -87,8 +86,7 @@ public class QTable implements FileWritable {
             file = new FileReader(filePath.toFile());
         }
         catch (FileNotFoundException e){
-            System.err.println("File not found: " + e.getMessage());
-            return;
+            throw new FileNotFoundException("File not found when loading QTable:\n" + e.getMessage());
         }
         
 
@@ -98,9 +96,9 @@ public class QTable implements FileWritable {
             while(line != null){
                 String[] parts = line.split(",");
                 String state = parts[0];
-                double[] QValues = new double[numActions];
+                double[] QValues = new double[Board.SIZE * Board.SIZE];
 
-                for(int i=0; i<numActions; i++){
+                for(int i=0; i<Board.SIZE * Board.SIZE; i++){
                     QValues[i] = Double.parseDouble(parts[i+1]);
                 }
 
@@ -110,7 +108,8 @@ public class QTable implements FileWritable {
 
         }
         catch(IOException e){
-            System.err.println("An error occured while loading the QTable: " + e.getMessage());
+            System.err.println("An error occured while loading the QTable (loading an empty one): " + e.getMessage());
+            table = new HashMap<>();
         }
 
     }

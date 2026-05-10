@@ -1,6 +1,7 @@
 package TicTacToeRL;
 
 import java.util.Random;
+import java.io.FileNotFoundException;
 import java.util.List;
 import TicTacToeRL.GameVars.Mark;
 import TicTacToeRL.GameVars.HyperParameters;
@@ -22,7 +23,7 @@ public class QAgent {
     }
 
     //for loading existing QTable from a file
-    QAgent(Mark mark, String filePath, HyperParameters parameters){
+    QAgent(Mark mark, String filePath, HyperParameters parameters) throws FileNotFoundException{
         agentMark = mark;
         agentQTable = new QTable(filePath);
         agentParameters = parameters;
