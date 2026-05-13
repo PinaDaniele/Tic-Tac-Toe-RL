@@ -7,10 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class QTable implements FileWritable {
-    private HashMap<String, double[]> table;
-
     private static final String SAVE_FOLDER = "./qtables/";
-    private final Path folderPath = Path.of(SAVE_FOLDER);
+    private static final Path folderPath = Path.of(SAVE_FOLDER);
+
+    private HashMap<String, double[]> table;
 
     public QTable(){
         table = new HashMap<>();
@@ -21,12 +21,16 @@ public class QTable implements FileWritable {
         loadFromFile(fileName);
     }
 
-    public double[] getQValues(String state){
-        return table.computeIfAbsent(state, k -> new double[Board.SIZE * Board.SIZE]);
+    public Set<String> getStates(){
+        return table.keySet();
     }
 
     public double getQValue(String state, int action){
         return getQValues(state)[action];
+    }
+
+    public double[] getQValues(String state){
+        return table.computeIfAbsent(state, k -> new double[Board.SIZE * Board.SIZE]);
     }
 
     public void updateQValue(String state, int action, double newValue){
@@ -45,9 +49,6 @@ public class QTable implements FileWritable {
         return maxQValue;
     }
 
-    public Set<String> getStates(){
-        return table.keySet();
-    }
 
     @Override
     public void saveToFile(String fileName){
@@ -55,7 +56,7 @@ public class QTable implements FileWritable {
             Files.createDirectories(folderPath);
         }
         catch(IOException e){
-            System.err.println("An error occured while creating the save QTable folder: " + e.getMessage());
+            System.err.printf("An error occured while creating the save QTable folder: %s%n", e.getMessage());
         }
 
         Path filePath = folderPath.resolve(fileName);
@@ -72,7 +73,7 @@ public class QTable implements FileWritable {
             }
         }
         catch(IOException e){
-            System.err.println("An error occured while saving the QTable: " + e.getMessage());
+            System.err.printf("An error occured while saving the QTable: %s%n", e.getMessage());
         }
 
     }
@@ -108,7 +109,7 @@ public class QTable implements FileWritable {
 
         }
         catch(IOException e){
-            System.err.println("An error occured while loading the QTable (loading an empty one): " + e.getMessage());
+            System.err.printf("An error occured while loading the QTable (loading an empty one): %s%n", e.getMessage());
             table = new HashMap<>();
         }
 

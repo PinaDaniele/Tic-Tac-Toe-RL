@@ -2,18 +2,17 @@ package TicTacToeRL;
 
 import java.util.ArrayList;
 import java.util.List;
-import TicTacToeRL.GameVars.Mark;
 
 public class Board{
         
-
     public enum GameState {
         IN_PROGRESS, DRAW, WIN;
     }
 
-    private Mark[][] boardMatrix;
     public static final int SIZE = 3;
-    private int moveCount;
+
+    private Mark[][] boardMatrix;
+    private int moveCount; 
 
     public Board(){
         moveCount = 0;
@@ -29,6 +28,7 @@ public class Board{
         }
     }
 
+    
     @Override
     public String toString(){
         StringBuilder stringBoard = new StringBuilder();
@@ -98,7 +98,6 @@ public class Board{
         return GameState.IN_PROGRESS;
     }
 
-    // --- Helper methods fo checking winning conditions ---
     private boolean checkRow(int row){
         if (boardMatrix[row][0] != Mark.EMPTY){
             for (int i=1; i<SIZE; i++){

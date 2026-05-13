@@ -3,27 +3,33 @@ package TicTacToeRL;
 import java.util.Random;
 import java.io.FileNotFoundException;
 import java.util.List;
-import TicTacToeRL.GameVars.Mark;
-import TicTacToeRL.GameVars.HyperParameters;
 
 public class QAgent {
+    public record HyperParameters(
+        double alpha,
+        double gamma,
+        double epsilon,
+        double epsilonDecay,
+        double minEpsilon){}
+
     private QTable agentQTable;
     private Mark agentMark;
 
-    private HyperParameters agentParameters;
+    private final HyperParameters agentParameters;
     private double currentEpsilon;
 
-    private static Random random = new Random();
+    private final Random random;
 
     QAgent(Mark mark, HyperParameters parameters){
+        random = new Random();
         agentMark = mark;
         agentQTable = new QTable();
         agentParameters = parameters;
         currentEpsilon = parameters.epsilon();
     }
 
-    //for loading existing QTable from a file
     QAgent(Mark mark, String filePath, HyperParameters parameters) throws FileNotFoundException{
+        random = new Random();
         agentMark = mark;
         agentQTable = new QTable(filePath);
         agentParameters = parameters;

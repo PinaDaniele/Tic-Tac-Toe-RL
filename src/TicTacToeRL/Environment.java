@@ -2,18 +2,13 @@ package TicTacToeRL;
 
 import java.util.Random;
 
-import TicTacToeRL.GameVars.Mark;
-
 public class Environment {
+
     public record StepResult(
         String state,
         double reward, 
         boolean done    
     ){}
-
-    private Board board;
-    private Mark currentPlayer;
-    private final static Random randomGenerator = new Random();
 
     public static final double INVALID_MOVE_PENALTY = -10;
     public static final double WIN_REWARD = 1;
@@ -21,7 +16,12 @@ public class Environment {
     public static final double IN_PROGRESS_REWARD = 0;
     public static final double LOSE_REWARD = -1;
 
+    private Board board;
+    private Mark currentPlayer;
+    private final Random randomGenerator;
+
     public Environment(){
+        randomGenerator = new Random();
         resetGame();
     }
 
