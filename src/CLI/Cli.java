@@ -5,6 +5,7 @@ import CLI.CliConstants.TextColors;
 
 import java.util.Scanner;
 import TicTacToeRL.QAgent;
+import TicTacToeRL.QTable;
 import TicTacToeRL.Trainer;
 
 public class Cli {
@@ -13,10 +14,11 @@ public class Cli {
 
     private static QAgent.HyperParameters parameters = new QAgent.HyperParameters(0.5, 0.9, 1.0, 0.99999, 0.05);
     public static void main(String[] args) {
-        showMainMenu();
+        String result = CliUtils.askPath(scanner, QTable.SAVE_FOLDER);
+        System.out.println(result);
     }
 
-    public static void showMainMenu(){
+    private static void showMainMenu(){
         Menu mainMenu = new Menu("===== MAIN MENU =====");
         mainMenu.addOption("Train", () -> {
             showTrainMenu();
@@ -26,7 +28,7 @@ public class Cli {
         mainMenu.ask();
     }
 
-    public static void showTrainMenu(){
+    private static void showTrainMenu(){
         Menu trainMenu = new Menu("===== TRAIN MENU =====");
 
         trainMenu.addOption("Tune",  () -> {
@@ -41,9 +43,10 @@ public class Cli {
         trainMenu.ask();
     }
 
-    public static void startTaining(){
+    private static void startTaining(){
         System.out.printf("%nInsert the number of epochs: ");
         int epochs = scanner.nextInt();
+        
 
         Trainer trainer = new Trainer(epochs, parameters);
         trainer.train();
@@ -53,8 +56,7 @@ public class Cli {
         scanner.nextLine();
     }
 
-
-    public static QAgent.HyperParameters setParamters(){
+    private static QAgent.HyperParameters setParamters(){
         CliUtils.clearScreen();
 
         System.out.printf("%n%sBellman Equation:%s Q(s,a) = Q(s,a) + α(R + y max(Q'(s,a)) - Q(s,a))%n", TextStyles.BOLD, TextColors.RESET);

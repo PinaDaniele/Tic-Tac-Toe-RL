@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class QTable implements FileWritable {
-    private static final String SAVE_FOLDER = "./qtables/";
+    public static final String SAVE_FOLDER = "./qtables/";
     private static final Path folderPath = Path.of(SAVE_FOLDER);
 
     private HashMap<String, double[]> table;

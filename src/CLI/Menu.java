@@ -52,11 +52,7 @@ public class Menu {
         return null;
     }
 
-    private void incorrectInput(){
-        scanner.nextLine();
-        System.out.printf("%n%sIncorrect input, press enter to return...%s", TextColors.RED, TextColors.RESET);
-        scanner.nextLine();
-    }
+    
 
     public void ask(){
         running = true;
@@ -72,7 +68,7 @@ public class Menu {
             Action selectedAction = checkInput(key);
 
             if (selectedAction == null){
-                incorrectInput();
+                CliUtils.incorrectInput(scanner);
             }
             else{
                 running = false;
