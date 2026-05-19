@@ -1,37 +1,63 @@
 package CLI;
 
 import CLI.CliConstants.TextStyles;
+import CLI.CliConstants.TextColors;
 
 import java.util.Scanner;
-
-import CLI.CliConstants.TextColors;
 import TicTacToeRL.QAgent;
+import TicTacToeRL.Trainer;
 
 public class Cli {
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    private static QAgent.HyperParameters parameters = new QAgent.HyperParameters(0.5, 0.9, 1.0, 0.99999, 0.05);
     public static void main(String[] args) {
         showMainMenu();
     }
 
     public static void showMainMenu(){
         Menu mainMenu = new Menu("===== MAIN MENU =====");
-        mainMenu.addOption("Train", () -> showTrainMenu());
+        mainMenu.addOption("Train", () -> {
+            showTrainMenu();
+            showMainMenu();
+        });
         mainMenu.addOption("Play", () -> System.out.println("Not implemented yet"));
         mainMenu.ask();
     }
 
     public static void showTrainMenu(){
-        QAgent.HyperParameters parameters = new QAgent.HyperParameters(0.5, 0.9, 1.0, 0.99999, 0.05);
         Menu trainMenu = new Menu("===== TRAIN MENU =====");
-        trainMenu.addOption("Tune",  () -> setParamters(parameters));
+
+        trainMenu.addOption("Tune",  () -> {
+            parameters = setParamters();
+            showTrainMenu();
+        });
+
+        trainMenu.addOption("Train", () -> {
+            startTaining();
+        });
+
         trainMenu.ask();
     }
 
+    public static void startTaining(){
+        System.out.printf("%nInsert the number of epochs: ");
+        int epochs = scanner.nextInt();
 
-    public static void setParamters(QAgent.HyperParameters parameters){
+        Trainer trainer = new Trainer(epochs, parameters);
+        trainer.train();
+
+        scanner.nextLine();
+        System.out.printf("%s%sTraining complete press enter to continue...%s", TextColors.BRIGHT_YELLOW, TextStyles.UNDERLINE, TextColors.RESET);
+        scanner.nextLine();
+    }
+
+
+    public static QAgent.HyperParameters setParamters(){
         CliUtils.clearScreen();
-        Scanner scanner = new Scanner(System.in);
 
-        System.out.printf("%sBellman Equation:%s Q(s,a) = Q(s,a) + α(R + y max(Q'(s,a)) - Q(s,a))%n", TextStyles.BOLD, TextColors.RESET);
+        System.out.printf("%n%sBellman Equation:%s Q(s,a) = Q(s,a) + α(R + y max(Q'(s,a)) - Q(s,a))%n", TextStyles.BOLD, TextColors.RESET);
         
         System.out.printf("%nSet alpha (learning rate - how much new info affects old info | suggested [0.5 - 0.7]): ");
         double alpha = scanner.nextDouble();
@@ -47,10 +73,12 @@ public class Cli {
 
         System.out.printf("%nSet epsilon minimum ( | suggested [0.0.5 | 0.01]): ");
         double epsilonMin = scanner.nextDouble();
-
-        parameters = new QAgent.HyperParameters(alpha, gamma, epsilon, epsilonDecay, epsilonMin);
-        scanner.close();
-        showTrainMenu();
         
+        if (scanner.hasNextLine()){
+            scanner.nextLine();
+        }
+
+        QAgent.HyperParameters parameters = new QAgent.HyperParameters(alpha, gamma, epsilon, epsilonDecay, epsilonMin);
+        return parameters;
     }
 }
