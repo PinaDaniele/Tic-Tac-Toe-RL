@@ -1,9 +1,12 @@
 package CLI;
 
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.lang.Runnable;
+
 import CLI.CliConstants.TextColors;
 import CLI.CliConstants.TextStyles;
-import java.util.Scanner;
+
 
 public class Menu {
     
@@ -15,6 +18,7 @@ public class Menu {
 
     private final Scanner scanner = new Scanner(System.in);
     private boolean running;
+    private boolean addedExit;
 
     public Menu(String header){
         this.header = header;
@@ -29,12 +33,13 @@ public class Menu {
         optionsList = new ArrayList<>();
     }
 
-    public void addOption(String key, Action action){
+    public void addOption(String key, Runnable action){
         optionsList.add(new MenuOption(key, action));
     }
 
     private void addExitOption(){
         optionsList.add(new MenuOption("Exit", () -> running=false));
+        addedExit = true;
     }
 
     private void printOptions(){
@@ -43,7 +48,7 @@ public class Menu {
         }
     }
 
-    private Action checkInput(String key){
+    private Runnable checkInput(String key){
         for(MenuOption option: optionsList){
             if (key.toLowerCase().equals(option.getKey().toLowerCase())){
                 return option.getAction();
@@ -52,11 +57,12 @@ public class Menu {
         return null;
     }
 
-    
-
     public void ask(){
         running = true;
-        addExitOption();
+        if(!addedExit){
+            addExitOption();
+        }
+        
 
         while(running){
             CliUtils.clearScreen();
@@ -64,15 +70,14 @@ public class Menu {
             printOptions();
             
             System.out.printf("%sInsert one of the command above: ", inputColor);
-            String key = scanner.next();
-            Action selectedAction = checkInput(key);
+            String key = scanner.nextLine();
+            Runnable selectedAction = checkInput(key);
 
             if (selectedAction == null){
                 CliUtils.incorrectInput(scanner);
             }
             else{
-                running = false;
-                selectedAction.execute();
+                selectedAction.run();
             }
         }
     }

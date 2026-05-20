@@ -1,11 +1,13 @@
 package CLI;
 
+import java.lang.Runnable;
+
 public class MenuOption {
     
     private String key;
-    private Action action;
+    private Runnable action;
 
-    public MenuOption(String key, Action action){
+    public MenuOption(String key, Runnable action){
         this.key = key;
         this.action = action;
     }
@@ -14,7 +16,7 @@ public class MenuOption {
         return this.key;
     }
 
-    public Action getAction(){
+    public Runnable getAction(){
         return this.action;
     }
 

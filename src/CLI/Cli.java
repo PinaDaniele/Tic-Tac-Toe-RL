@@ -5,7 +5,6 @@ import CLI.CliConstants.TextColors;
 
 import java.util.Scanner;
 import TicTacToeRL.QAgent;
-import TicTacToeRL.QTable;
 import TicTacToeRL.Trainer;
 
 public class Cli {
@@ -14,16 +13,12 @@ public class Cli {
 
     private static QAgent.HyperParameters parameters = new QAgent.HyperParameters(0.5, 0.9, 1.0, 0.99999, 0.05);
     public static void main(String[] args) {
-        String result = CliUtils.askPath(scanner, QTable.SAVE_FOLDER);
-        System.out.println(result);
+        showMainMenu();
     }
 
     private static void showMainMenu(){
         Menu mainMenu = new Menu("===== MAIN MENU =====");
-        mainMenu.addOption("Train", () -> {
-            showTrainMenu();
-            showMainMenu();
-        });
+        mainMenu.addOption("Train", () -> showTrainMenu());
         mainMenu.addOption("Play", () -> System.out.println("Not implemented yet"));
         mainMenu.ask();
     }
@@ -33,7 +28,6 @@ public class Cli {
 
         trainMenu.addOption("Tune",  () -> {
             parameters = setParamters();
-            showTrainMenu();
         });
 
         trainMenu.addOption("Train", () -> {
@@ -45,11 +39,11 @@ public class Cli {
 
     private static void startTaining(){
         System.out.printf("%nInsert the number of epochs: ");
-        int epochs = scanner.nextInt();
+        int epochs = Integer.parseInt(scanner.nextLine());
         
 
         Trainer trainer = new Trainer(epochs, parameters);
-        trainer.train();
+        trainer.trainLoop();
 
         scanner.nextLine();
         System.out.printf("%s%sTraining complete press enter to continue...%s", TextColors.BRIGHT_YELLOW, TextStyles.UNDERLINE, TextColors.RESET);

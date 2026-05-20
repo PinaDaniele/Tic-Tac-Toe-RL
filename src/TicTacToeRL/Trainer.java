@@ -36,7 +36,65 @@ public class Trainer {
         this.oAgent = new QAgent(Mark.O, filePath, parameters);
     }
 
-    public void train(){
+    private void trainStep(HashMap<String, Integer> batchStats){
+        env.resetGame();
+        boolean done = false;
+
+        PreviousMove lastMoveX = null;
+        PreviousMove lastMoveO = null;
+
+        while (!done){
+            boolean isXTurn = (env.getCurrentPlayer() == Mark.X);
+            QAgent activeAgent = (isXTurn) ? xAgent : oAgent;
+            QAgent waitingAgent = (isXTurn) ? oAgent : xAgent;
+            PreviousMove lastMove = (isXTurn) ? lastMoveO : lastMoveX;
+                
+            String currentState = env.getBoard().getBoardStateString();
+            List<Integer> availableMoves = env.getBoard().getAvailableMoves();
+
+            int actionIndex = activeAgent.makeAction(currentState, availableMoves);
+            Environment.StepResult moveResult = env.step(actionIndex);
+
+            if (moveResult.done()){
+                done = true;
+
+                activeAgent.learn(currentState, actionIndex, moveResult.reward(), moveResult.state(), moveResult.done());
+                incrementHashMapValue(batchStats, "modified");
+
+                if (lastMove != null){
+                    double opponentReward = (moveResult.reward() == Environment.WIN_REWARD) ? Environment.LOSE_REWARD : Environment.DRAW_REWARD;
+                    waitingAgent.learn(lastMove.state(), lastMove.action(), opponentReward, currentState, moveResult.done());
+                    incrementHashMapValue(batchStats, "modified");
+                }
+
+                if(moveResult.reward() == Environment.WIN_REWARD){
+                    String key = String.format("%sWins", activeAgent.getMark().toString().toLowerCase());
+                    incrementHashMapValue(batchStats, key);
+                }
+                else{
+                    incrementHashMapValue(batchStats, "draws");
+                }
+                    
+            }
+            else{
+                    
+                if (lastMove != null){
+                    waitingAgent.learn(lastMove.state(), lastMove.action(), lastMove.reward(), currentState, moveResult.done());
+                    incrementHashMapValue(batchStats, "modified");
+                }
+
+                PreviousMove currentMove = new PreviousMove(currentState, actionIndex, moveResult.reward());
+                if(isXTurn){
+                    lastMoveX = currentMove;
+                }
+                else{
+                    lastMoveO = currentMove;
+                }
+            }
+        }
+    }
+
+    public void trainLoop(){
         int batchDelimiter = epochs * BATCH_PERCENTAGE / 100;
         HashMap<String, Integer> batchStats = new HashMap<>(Map.of(
             "xWins", 0,
@@ -46,62 +104,7 @@ public class Trainer {
         ));
 
         for (int epoch = 0; epoch < epochs; epoch++){
-            env.resetGame();
-            boolean done = false;
-
-            PreviousMove lastMoveX = null;
-            PreviousMove lastMoveO = null;
-
-            while (!done){
-
-                boolean isXTurn = (env.getCurrentPlayer() == Mark.X);
-                QAgent activeAgent = (isXTurn) ? xAgent : oAgent;
-                QAgent waitingAgent = (isXTurn) ? oAgent : xAgent;
-                PreviousMove lastMove = (isXTurn) ? lastMoveO : lastMoveX;
-                
-                String currentState = env.getBoard().getBoardStateString();
-                List<Integer> availableMoves = env.getBoard().getAvailableMoves();
-
-                int actionIndex = activeAgent.makeAction(currentState, availableMoves);
-                Environment.StepResult moveResult = env.step(actionIndex);
-
-                if (moveResult.done()){
-                    done = true;
-
-                    activeAgent.learn(currentState, actionIndex, moveResult.reward(), moveResult.state(), moveResult.done());
-                    incrementHashMapValue(batchStats, "modified");
-
-                    if (lastMove != null){
-                        double opponentReward = (moveResult.reward() == Environment.WIN_REWARD) ? Environment.LOSE_REWARD : Environment.DRAW_REWARD;
-                        waitingAgent.learn(lastMove.state(), lastMove.action(), opponentReward, currentState, moveResult.done());
-                        incrementHashMapValue(batchStats, "modified");
-                    }
-
-                    if (moveResult.reward() == Environment.WIN_REWARD){
-                        String key = String.format("%sWins", activeAgent.getMark().toString().toLowerCase());
-                        incrementHashMapValue(batchStats, key);
-                    }
-                    else{
-                        incrementHashMapValue(batchStats, "draws");
-                    }
-                    
-                }
-                else{
-                    
-                    if (lastMove != null){
-                        waitingAgent.learn(lastMove.state(), lastMove.action(), lastMove.reward(), currentState, moveResult.done());
-                        incrementHashMapValue(batchStats, "modified");
-                    }
-
-                    PreviousMove currentMove = new PreviousMove(currentState, actionIndex, moveResult.reward());
-                    if(isXTurn){
-                        lastMoveX = currentMove;
-                    }
-                    else{
-                        lastMoveO = currentMove;
-                    }
-                }
-            }
+            trainStep(batchStats);
 
             xAgent.decayEpsilon();
             oAgent.decayEpsilon();
@@ -155,13 +158,7 @@ public class Trainer {
             double[] mergedQValue = mergedTable.getQValues(state);
 
             for (int i = 0; i < actionNum; i++){
-                if (xQValues[i] != 0.0 && oQValues[i] != 0.0){
-                    mergedQValue[i] = (xQValues[i] + oQValues[i]) / 2.0;
-                }
-                else{
-                    mergedQValue[i] = (xQValues[i] != 0) ? xQValues[i] : oQValues[i];
-                }
-                
+                mergedQValue[i] = (xQValues[i] != 0) ? xQValues[i] : oQValues[i];
             }
         }
         return mergedTable;

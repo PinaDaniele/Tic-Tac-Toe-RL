@@ -5,6 +5,6 @@ public class App {
         
         QAgent.HyperParameters parameters = new QAgent.HyperParameters(0.1, 0.9, 0.1, 0.9995, 0.01);
         Trainer testTrainer = new Trainer(1000000, parameters);
-        testTrainer.train();
+        testTrainer.trainLoop();
     }
 }

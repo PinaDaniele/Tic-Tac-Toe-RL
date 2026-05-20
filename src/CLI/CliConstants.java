@@ -2,7 +2,7 @@ package CLI;
 
 public final class CliConstants {
 
-    public final class TextColors{
+    public static final class TextColors{
         public final static String RESET = "\033[0m";
 
         public final static String BLACK = "\033[0;30m";
@@ -24,7 +24,7 @@ public final class CliConstants {
         public final static String BRIGHT_WHITE = "\033[0;97m";
     }
 
-    public final class TextStyles{
+    public final static class TextStyles{
         public final static String BOLD = "\033[1m";
         public final static String UNDERLINE = "\033[4m";
     }

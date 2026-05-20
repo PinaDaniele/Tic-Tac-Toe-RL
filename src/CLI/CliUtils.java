@@ -28,7 +28,7 @@ public final class CliUtils {
             System.out.printf("%n%d. %s", i, files[i].getName());
         }
         System.out.printf("%nSelect the index of the file you want to load (put non-existent index to load empty): ");
-        int index = scanner.nextInt();
+        int index = Integer.parseInt(scanner.nextLine());
 
         try{
             return files[index].getName();
