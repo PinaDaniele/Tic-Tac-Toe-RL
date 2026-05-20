@@ -13,7 +13,7 @@ public final class CliUtils {
 
     public static void incorrectInput(Scanner scanner){
         scanner.nextLine();
-        System.out.printf("%n%sIncorrect input, press enter to return...%s", TextColors.RED, TextColors.RESET);
+        System.err.printf("%n%sIncorrect input, press enter to return...%s", TextColors.RED, TextColors.RESET);
         scanner.nextLine();
     }
 
@@ -36,6 +36,28 @@ public final class CliUtils {
         catch (IndexOutOfBoundsException e){
             return null;
         }
+
+    }
+
+    public static boolean askBoolean(Scanner scanner, String message){
+        boolean choice;
+
+        while(true){
+            System.out.printf("%n%s: (Y-n): ", message);
+            String input = scanner.nextLine().toLowerCase();
+
+            if (input.equals("y")){
+                choice = true;
+                break;
+            }
+            else if(input.equals("n")){
+                choice = false;
+                break;
+            }
+
+            incorrectInput(scanner);
+        }
+        return choice;
 
     }
 }

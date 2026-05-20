@@ -1,7 +1,6 @@
 package TicTacToeRL;
 
 import java.util.Random;
-import java.io.FileNotFoundException;
 import java.util.List;
 
 public class QAgent {
@@ -28,7 +27,7 @@ public class QAgent {
         currentEpsilon = parameters.epsilon();
     }
 
-    QAgent(Mark mark, String filePath, HyperParameters parameters) throws FileNotFoundException{
+    QAgent(Mark mark, String filePath, HyperParameters parameters){
         random = new Random();
         agentMark = mark;
         agentQTable = new QTable(filePath);

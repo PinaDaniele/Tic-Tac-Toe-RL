@@ -5,6 +5,7 @@ import CLI.CliConstants.TextColors;
 
 import java.util.Scanner;
 import TicTacToeRL.QAgent;
+import TicTacToeRL.QTable;
 import TicTacToeRL.Trainer;
 
 public class Cli {
@@ -41,12 +42,23 @@ public class Cli {
         System.out.printf("%nInsert the number of epochs: ");
         int epochs = Integer.parseInt(scanner.nextLine());
         
+        boolean loadFromFile = CliUtils.askBoolean(scanner, "Do you want to load an existing QTable?");
+        String fileName = null;
+        if (loadFromFile){
+            fileName = CliUtils.askPath(scanner, QTable.SAVE_FOLDER);
+        }
 
-        Trainer trainer = new Trainer(epochs, parameters);
+        Trainer trainer = null;
+        if(fileName == null){
+            trainer = new Trainer(epochs, parameters);
+        }
+        else{
+            trainer = new Trainer(epochs, parameters, fileName);
+        }
+        
         trainer.trainLoop();
 
-        scanner.nextLine();
-        System.out.printf("%s%sTraining complete press enter to continue...%s", TextColors.BRIGHT_YELLOW, TextStyles.UNDERLINE, TextColors.RESET);
+        System.out.printf("%n%s%sTraining complete press enter to continue...%s", TextColors.BRIGHT_YELLOW, TextStyles.UNDERLINE, TextColors.RESET);
         scanner.nextLine();
     }
 
@@ -56,23 +68,19 @@ public class Cli {
         System.out.printf("%n%sBellman Equation:%s Q(s,a) = Q(s,a) + α(R + y max(Q'(s,a)) - Q(s,a))%n", TextStyles.BOLD, TextColors.RESET);
         
         System.out.printf("%nSet alpha (learning rate - how much new info affects old info | suggested [0.5 - 0.7]): ");
-        double alpha = scanner.nextDouble();
+        double alpha = Double.parseDouble(scanner.nextLine());
 
         System.out.printf("%nSet gamma (discount factor - how much future reward affect current | suggested [0.9]): ");
-        double gamma = scanner.nextDouble();
+        double gamma = Double.parseDouble(scanner.nextLine());
 
         System.out.printf("%nSet epsilon (random action chance | suggested [1.0]): ");
-        double epsilon = scanner.nextDouble();
+        double epsilon = Double.parseDouble(scanner.nextLine());
 
         System.out.printf("%nSet epsilon decay (how much epsilon is lowered each epoch | suggested [0.99999]): ");
-        double epsilonDecay = scanner.nextDouble();
+        double epsilonDecay = Double.parseDouble(scanner.nextLine());
 
         System.out.printf("%nSet epsilon minimum ( | suggested [0.0.5 | 0.01]): ");
-        double epsilonMin = scanner.nextDouble();
-        
-        if (scanner.hasNextLine()){
-            scanner.nextLine();
-        }
+        double epsilonMin = Double.parseDouble(scanner.nextLine());
 
         QAgent.HyperParameters parameters = new QAgent.HyperParameters(alpha, gamma, epsilon, epsilonDecay, epsilonMin);
         return parameters;

@@ -16,7 +16,7 @@ public class QTable implements FileWritable {
         table = new HashMap<>();
     }
 
-    public QTable(String fileName) throws FileNotFoundException{
+    public QTable(String fileName){
         table = new HashMap<>();
         loadFromFile(fileName);
     }
@@ -79,7 +79,7 @@ public class QTable implements FileWritable {
     }
 
     @Override
-    public void loadFromFile(String fileName) throws FileNotFoundException{
+    public void loadFromFile(String fileName){
         table.clear();
         FileReader file;
         try{
@@ -87,7 +87,9 @@ public class QTable implements FileWritable {
             file = new FileReader(filePath.toFile());
         }
         catch (FileNotFoundException e){
-            throw new FileNotFoundException("File not found when loading QTable:\n" + e.getMessage());
+            System.err.printf(fileName, "An error occured while loading the QTable (loading an empty one): %s%n", e.getMessage());
+            table = new HashMap<>();
+            return;
         }
         
 

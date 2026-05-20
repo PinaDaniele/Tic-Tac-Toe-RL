@@ -29,7 +29,7 @@ public class Trainer {
 
     }
 
-    public Trainer(int epochs,QAgent.HyperParameters parameters, String filePath) throws FileNotFoundException{
+    public Trainer(int epochs,QAgent.HyperParameters parameters, String filePath){
         this.epochs = epochs;
         this.env = new Environment();
         this.xAgent = new QAgent(Mark.X, filePath, parameters);
