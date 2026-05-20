@@ -12,7 +12,6 @@ public final class CliUtils {
     }
 
     public static void incorrectInput(Scanner scanner){
-        scanner.nextLine();
         System.err.printf("%n%sIncorrect input, press enter to return...%s", TextColors.RED, TextColors.RESET);
         scanner.nextLine();
     }

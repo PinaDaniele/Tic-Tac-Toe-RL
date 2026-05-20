@@ -151,6 +151,10 @@ public class Board{
         }
 
         return LRDiag || RLDiag;
-    }   
+    }
+    
+    public Mark[][] getMatrix(){
+        return boardMatrix;
+    }
 
 }

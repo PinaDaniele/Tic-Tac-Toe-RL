@@ -19,7 +19,7 @@ public class QAgent {
 
     private final Random random;
 
-    QAgent(Mark mark, HyperParameters parameters){
+    public QAgent(Mark mark, HyperParameters parameters){
         random = new Random();
         agentMark = mark;
         agentQTable = new QTable();
@@ -27,7 +27,7 @@ public class QAgent {
         currentEpsilon = parameters.epsilon();
     }
 
-    QAgent(Mark mark, String filePath, HyperParameters parameters){
+    public QAgent(Mark mark, String filePath, HyperParameters parameters){
         random = new Random();
         agentMark = mark;
         agentQTable = new QTable(filePath);
